@@ -67,9 +67,18 @@ app.get("/artist/:id", async (req, res) => {
 
 /* ---- Start ---- */
 
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected, reconnecting...");
+});
+
+mongoose.connection.on("reconnected", () => {
+  console.log("MongoDB reconnected");
+});
+
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING, {
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 30000,
+    heartbeatFrequencyMS: 10000,
   })
   .then(() => {
     console.log("Connected to MongoDB");
