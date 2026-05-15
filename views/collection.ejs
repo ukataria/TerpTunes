@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <h1>My Collection</h1>
+
+  <% if (tracks.length === 0) { %>
+    <p class="empty-msg">No saved tracks yet. <a href="/">Search for music</a> and save your favorites!</p>
+  <% } else { %>
+    <div class="collection-header-row">
+      <p class="collection-count"><%= tracks.length %> saved track<%= tracks.length !== 1 ? 's' : '' %></p>
+      <button class="btn btn-danger btn-sm" onclick="clearCollection()">Clear Collection</button>
+    </div>
+    <div class="card-grid">
+      <% tracks.forEach(track => { %>
+        <div class="card track-card" id="track-<%= track._id %>">
+          <% if (track.albumImage) { %>
+            <img src="<%= track.albumImage %>" alt="<%= track.albumName %>" class="card-thumb" />
+          <% } %>
+          <div class="card-body">
+            <h3 class="card-title"><%= track.trackName %></h3>
+            <% if (track.artistId) { %>
+              <a href="/artist/<%= track.artistId %>" class="card-artist"><%= track.artistName %></a>
+            <% } else { %>
+              <p class="card-artist"><%= track.artistName %></p>
+            <% } %>
+            <p class="card-album"><%= track.albumName %></p>
+
+            <div class="stars">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <span class="star <%= i <= track.rating ? 'star--filled' : '' %>">&#9733;</span>
+              <% } %>
+            </div>
+
+            <% if (track.notes) { %>
+              <p class="card-notes"><%= track.notes %></p>
+            <% } %>
+
+            <% if (track.previewUrl) { %>
+              <div class="player" data-src="<%= track.previewUrl %>">
+                <button class="player-btn" aria-label="Play">
+                  <svg class="icon-play" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                  <svg class="icon-pause" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                </button>
+                <div class="player-bar">
+                  <div class="player-progress"></div>
+                </div>
+                <span class="player-time">0:30</span>
+              </div>
+            <% } %>
+
+            <div class="card-actions">
+              <a href="/collection/edit/<%= track._id %>" class="btn btn-outline btn-sm">Edit</a>
+              <button class="btn btn-danger btn-sm" onclick="deleteTrack('<%= track._id %>')">Delete</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

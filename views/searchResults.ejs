@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+<section class="search-header">
+  <h1>Results for "<%= query %>"</h1>
+  <form action="/search" method="GET" class="search-form search-form--inline">
+    <input type="text" name="q" value="<%= query %>" required />
+    <button type="submit">Search</button>
+  </form>
+</section>
+
+<% if (tracks.length === 0) { %>
+  <p class="empty-msg">No results found. Try a different search.</p>
+<% } else { %>
+  <div class="card-grid">
+    <% tracks.forEach(track => { %>
+      <div class="card track-card">
+        <img src="<%= track.album.cover_medium %>" alt="<%= track.album.title %>" class="card-thumb" />
+        <div class="card-body">
+          <h3 class="card-title"><%= track.title %></h3>
+          <a href="/artist/<%= track.artist.id %>" class="card-artist"><%= track.artist.name %></a>
+          <p class="card-album"><%= track.album.title %></p>
+          <% if (track.preview) { %>
+            <div class="player" data-src="<%= track.preview %>">
+              <button class="player-btn" aria-label="Play">
+                <svg class="icon-play" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                <svg class="icon-pause" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+              </button>
+              <div class="player-bar">
+                <div class="player-progress"></div>
+              </div>
+              <span class="player-time">0:30</span>
+            </div>
+          <% } %>
+          <div class="save-row">
+            <div class="inline-rating">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <span class="star-pick" data-value="<%= i %>">&#9733;</span>
+              <% } %>
+            </div>
+            <button
+              class="btn btn-save"
+              onclick="saveTrack(this)"
+              data-track='<%- JSON.stringify({
+                trackName: track.title,
+                artistName: track.artist.name,
+                artistId: track.artist.id,
+                albumName: track.album.title,
+                albumImage: track.album.cover_medium,
+                previewUrl: track.preview,
+                deezerUrl: track.link,
+                duration: track.duration
+              }) %>'
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

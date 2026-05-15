@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <h1>Discover Music</h1>
+  <p>Search for artists and tracks, listen to previews, and save your favorites.</p>
+  <form action="/search" method="GET" class="search-form">
+    <input type="text" name="q" placeholder="Search artists, tracks, albums..." required autofocus />
+    <button type="submit">Search</button>
+  </form>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<section class="artist-header">
+  <img src="<%= artist.picture_big %>" alt="<%= artist.name %>" class="artist-img" />
+  <div class="artist-info">
+    <h1><%= artist.name %></h1>
+    <p class="artist-stats">
+      <span><%= (artist.nb_fan || 0).toLocaleString() %> fans</span>
+      <span><%= artist.nb_album || 0 %> albums</span>
+    </p>
+  </div>
+</section>
+
+<% if (topTracks.length > 0) { %>
+  <section class="section">
+    <h2>Top Tracks</h2>
+    <div class="card-grid">
+      <% topTracks.forEach(track => { %>
+        <div class="card track-card">
+          <img src="<%= track.album.cover_medium %>" alt="<%= track.album.title %>" class="card-thumb" />
+          <div class="card-body">
+            <h3 class="card-title"><%= track.title %></h3>
+            <p class="card-album"><%= track.album.title %></p>
+            <% if (track.preview) { %>
+              <div class="player" data-src="<%= track.preview %>">
+                <button class="player-btn" aria-label="Play">
+                  <svg class="icon-play" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                  <svg class="icon-pause" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                </button>
+                <div class="player-bar">
+                  <div class="player-progress"></div>
+                </div>
+                <span class="player-time">0:30</span>
+              </div>
+            <% } %>
+            <div class="save-row">
+              <div class="inline-rating">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <span class="star-pick" data-value="<%= i %>">&#9733;</span>
+                <% } %>
+              </div>
+              <button
+                class="btn btn-save"
+                onclick="saveTrack(this)"
+                data-track='<%- JSON.stringify({
+                  trackName: track.title,
+                  artistName: artist.name,
+                  artistId: artist.id,
+                  albumName: track.album.title,
+                  albumImage: track.album.cover_medium,
+                  previewUrl: track.preview,
+                  deezerUrl: track.link || "",
+                  duration: track.duration
+                }) %>'
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
+
+<% if (relatedArtists.length > 0) { %>
+  <section class="section">
+    <h2>Related Artists</h2>
+    <div class="card-grid card-grid--artists">
+      <% relatedArtists.forEach(ra => { %>
+        <a href="/artist/<%= ra.id %>" class="card artist-card">
+          <img src="<%= ra.picture_medium %>" alt="<%= ra.name %>" class="card-img card-img--round" />
+          <div class="card-body">
+            <h3 class="card-title"><%= ra.name %></h3>
+            <p class="card-fans"><%= (ra.nb_fan || 0).toLocaleString() %> fans</p>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
+
+<%- include('partials/footer') %>
